@@ -25,6 +25,15 @@ sudo service vieramqtt start
 sudo service vieramqtt stop
 ```
 
+# Sending commands
+
+This is an example how you can control the Viera TV with MQTT:
+
+```
+mosquitto_pub -h broker -t '<mytopic>' -m 'num_0'
+```
+You can get the command names from [node-panasonic-viera](https://github.com/jens-maus/node-panasonic-viera/blob/main/viera.js#L480).
+
 
 # Uninstall
 ```

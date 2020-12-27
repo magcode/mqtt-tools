@@ -18,7 +18,7 @@ console.log();
 var mqttClient  = mqtt.connect(broker);
 
 mqttClient.on("connect",function(){	
-  console.log("connected to mqtt broker");
+  console.log("Connected to mqtt broker");
   mqttClient.subscribe(topic);
 })
 
