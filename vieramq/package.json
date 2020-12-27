@@ -1,0 +1,22 @@
+{
+    "name": "vieramq",
+    "version": "1.0.0",
+    "description": "Panasonic Viera MQTT Gateway",
+    "license": "MIT",
+    "keywords": [
+        "panasonic",
+        "viera",
+        "mqtt"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jens-maus/node-panasonic-viera.git"
+    },
+    "dependencies": {
+        "mqtt": "latest",
+        "node-panasonic-viera": "latest",
+        "config": "latest",
+        "node-service-linux": "latest"
+    },
+    "main": "vieramq.js"
+}
