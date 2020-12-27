@@ -16,7 +16,7 @@
         "mqtt": "latest",
         "node-panasonic-viera": "latest",
         "config": "latest",
-        "node-service-linux": "latest"
+        "node-linux": "latest"
     },
     "main": "vieramq.js"
 }

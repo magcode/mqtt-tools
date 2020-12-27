@@ -1,16 +1,19 @@
-var Service = require('node-service-linux').Service;
+var Service = require('node-linux').Service;
+let os = require('os')
+const config = require('config');
 
 // Create a new service object
 var svc = new Service({
-  name:'Viera MQTT',
+  name:'vieramqtt',
   description: 'Viera MQTT',
-  script: __dirname + 'vieramq.js'
+  script: __dirname + '/vieramq.js',
+  WorkingDirectory: __dirname,
+  user: config.get('serviceuser')
 });
-
-console.log(__dirname);
 
 svc.on('install',function(){
-  svc.start();
+  //svc.start();
+  console.log("Installed");
 });
 
-//svc.install();
+svc.install();

@@ -3,5 +3,6 @@
         "broker": "mqtt://mybroker",
         "topic": "example/tv"
     },
-    "vieraIP": "0.0.0.0"
+    "vieraIP": "0.0.0.0",
+    "serviceuser": "me"
 }
