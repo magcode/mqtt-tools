@@ -41,3 +41,29 @@ sudo service vieramqtt stop
 cd ~/mqtt-tools/vieramq
 sudo node uninstall.
 ```
+
+
+# Openhab integration
+
+Example things file
+```
+Thing mqtt:topic:panasonic "Panasonic TV" (mqtt:broker:mosquitto) {
+    Channels:
+        Type string : command "Panasonic TV Command" [ commandTopic="home/tv/command/set"]        
+}
+```
+
+Example items file
+```
+String tvCommand "Panasonic TV command"  {channel="mqtt:topic:panasonic:command"}
+```
+
+Example rules file
+```
+rule "example"
+    when
+        Channel "<whatever>" triggered
+    then        
+        tvCommand.sendCommand("home")        
+end
+```
