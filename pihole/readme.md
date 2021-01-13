@@ -19,8 +19,8 @@ Change the file `mqtt-tools/pihole/config/default.json`
 
 # Start/stop
 ```
-sudo service pihole-mqtt start
-sudo service pihole-mqtt stop
+sudo service piholemqtt start
+sudo service piholemqtt stop
 ```
 
 # Sending en
