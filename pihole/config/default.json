@@ -4,5 +4,6 @@
     "topic": "home/pihole"
   },
   "piHolePassword": "",
-  "piHoleIP": ""
+  "piHoleIP": "",
+  "serviceuser": "me"
 }
