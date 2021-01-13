@@ -34,7 +34,7 @@ mosquitto_pub -h broker -t '<mytopic>/status/set' -m 'enabled'
 
 # Uninstall
 ```
-sudo service pihole-mqtt stop
+sudo service piholemqtt stop
 cd ~/mqtt-tools/pihole
 sudo node uninstall.
 ```
