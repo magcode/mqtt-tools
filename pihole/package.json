@@ -1,0 +1,21 @@
+{
+    "name": "pihole",
+    "version": "1.0.0",
+    "description": "Pi-hole MQTT Gateway",
+    "license": "MIT",
+    "keywords": [
+        "pihole",
+        "mqtt"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/magcode/mqtt-tools.git"
+    },
+    "dependencies": {
+        "mqtt": "latest",
+        "config": "latest",
+        "node-linux": "latest",
+        "node-cron": "latest"
+    },
+    "main": "pihole.js"
+}
