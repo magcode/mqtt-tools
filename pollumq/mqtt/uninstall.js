@@ -1,4 +1,4 @@
-var Service = require('node-service-linux').Service;
+var Service = require('node-linux').Service;
 
 var svc = new Service({
   name:'pollumq',
