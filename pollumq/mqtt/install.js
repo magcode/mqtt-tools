@@ -8,6 +8,8 @@ var svc = new Service({
   description: 'Pollucom MQTT Gateway',
   script: __dirname + '/pollumq.js',
   WorkingDirectory: __dirname,
+  StandardOutput: 'inherit',
+  StandardError: 'inherit',
   user: config.get('serviceuser')
 });
 
