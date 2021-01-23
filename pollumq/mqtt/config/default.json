@@ -5,6 +5,5 @@
   },
   "usbport": "/dev/ttyUSB1",
   "schedule": 15,
-  "exec": "~/mqtt-tools/pollumq/pollucom",
-  "serviceuser": "me"
+  "exec": "~/mqtt-tools/pollumq/pollucom"
 }
