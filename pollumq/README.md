@@ -4,8 +4,9 @@ It provide an MQTT interface for easy integration into your home automation.
 
 # Installing
 This guide is for running on a Raspberry Pi.
+
 Make sure you have gcc and NodeJS installed.
-The install script requires password less sudo permission. Do the steps in `install.sh` if you don't have this.
+The install script requires password less sudo permission. Do the steps in `install.sh` manually if you don't have this.
 
 ```
 cd ~
