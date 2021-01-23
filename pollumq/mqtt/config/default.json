@@ -1,0 +1,9 @@
+{
+  "mqtt": {
+    "broker": "mqtt://broker",
+    "topic": "home/heating/heatmeter"
+  },
+  "usbport": "/dev/ttyUSB1",
+  "schedule": 1,
+  "exec": "~/PolluComE/pollucom"
+}
