@@ -6,7 +6,7 @@ const config = require('config');
 var svc = new Service({
   name: 'pollumq',
   description: 'Pollucom MQTT Gateway',
-  script: __dirname + '/mqtt/pollumq.js',
+  script: __dirname + '/pollumq.js',
   WorkingDirectory: __dirname,
   user: config.get('serviceuser')
 });
