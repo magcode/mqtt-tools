@@ -15,7 +15,8 @@
         "mqtt": "latest",
         "config": "latest",
         "node-linux": "latest",
-        "node-cron": "latest"
+        "node-cron": "latest",
+        "@jsier/retrier": "latest"
     },
     "main": "pihole.js"
 }
