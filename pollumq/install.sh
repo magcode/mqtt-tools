@@ -10,8 +10,8 @@ __service="
 Description=PolluComE MQTT
 After=network.target
 [Service]
-ExecStart=node $home/mqtt-tools/pollumq/mqtt/pollumq.js
-WorkingDirectory=$home/mqtt-tools/pollumq/mqtt
+ExecStart=node $home/pollumq.js
+WorkingDirectory=$home
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
