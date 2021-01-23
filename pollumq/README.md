@@ -5,6 +5,7 @@ It provide an MQTT interface for easy integration into your home automation.
 # Installing
 This guide is for running on a Raspberry Pi.
 Make sure you have gcc and NodeJS installed.
+The install script requires password less sudo permission. Do the steps in `install.sh` if you don't have this.
 
 ```
 cd ~
@@ -14,8 +15,10 @@ cd mqtt-tools/pollumq
 ```
 
 # Configuration
+Before you start it the first time configure `mqtt/config/default.json`
 
-## before you start it the first time!
+# Starting
+
 **Press the button** on your PolluCom E unit. After a short press, the unit will respond to IR signals for one hour.
 
 

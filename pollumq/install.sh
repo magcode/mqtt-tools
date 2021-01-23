@@ -7,7 +7,7 @@ user=`whoami`
 
 __service="
 [Unit]
-Description=PolluComE MQTT
+Description=Pollucom MQTT Gateway
 After=network.target
 [Service]
 ExecStart=node $home/pollumq.js
@@ -24,4 +24,4 @@ echo "$__service" | sudo tee /etc/systemd/system/pollumq.service
 sudo systemctl daemon-reload
 sudo systemctl enable pollumq.service
 
-echo "Done. Start with 'sudo service pollumq start'."
+echo "Done. Configure in config/default.json and start with 'sudo service pollumq start' afterwards."

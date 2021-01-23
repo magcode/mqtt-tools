@@ -14,7 +14,6 @@
     "dependencies": {
         "mqtt": "latest",
         "config": "latest",
-        "node-linux": "latest",
         "node-cron": "latest",
         "@jsier/retrier": "latest"
     },
