@@ -8,7 +8,7 @@ I used a ["G20 remote control"](https://www.google.com/search?q=G20+remote+contr
 
 You need a linux machine. It is verfied working with Debian 10.
 
-# Step 1: download
+# Step 1: Download
 You need to [install NodeJS before](https://nodejs.org/en/download/package-manager).
 
 ```
@@ -17,7 +17,7 @@ git clone git@github.com:magcode/mqtt-tools.git
 cd mqtt-tools/remotekeys
 ```
 
-# Step 2: configure
+# Step 2: Configure
 You need to configure the tool in the file `config.yaml`.
 
 ```
@@ -61,7 +61,7 @@ lxc.mount.entry: /dev/input/event6 dev/input/event14 none bind,optional,create=f
 Now in your container the event id's are: `event10`, `event13`, `event14`
 
 
-# Step 3: install
+# Step 3: Install
 ```
 npm install
 sudo node install.js
@@ -75,8 +75,8 @@ sudo service remotekeys stop
 
 # Uninstall
 ```
-sudo service vieramqtt stop
-cd ~/mqtt-tools/vieramq
+sudo service remotekeys stop
+cd ~/mqtt-tools/remotekeys
 sudo node uninstall.
 ```
 
@@ -97,8 +97,21 @@ home/wz/remote/KEY_MUTE-LONG trigger
 
 
 ## Auto-Repeat
-Some keys /e.g. Volup support auto-repeat. If you hold the key multiple MQTT messages will be triggered.
+Some keys /e.g. `KEY_VOLUMEUP` support auto-repeat. If you hold the key multiple MQTT messages will be triggered.
 
+# Notes
+* You cannot use the mouse feature with this tool.
+* The "mic" button is not useable.
+* In case the remote does not send keys, press the "mouse" button once.
+
+You should disable the power key handling in Linux. Otherwise your system may shut down if you press the "Power" button on the remote.
+
+For Debian the following must be set in `/etc/systemd/logind.conf`
+
+```
+HandlePowerKey=ignore
+HandleSuspendKey=ignore
+```
 
 # Openhab integration
 
