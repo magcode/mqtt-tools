@@ -92,7 +92,7 @@ home/room/remote/KEY_MUTE trigger
 ## Long press
 Long pressing a button will trigger the following MQTT message:
 ```
-home/wz/remote/KEY_MUTE-LONG trigger
+home/room/remote/KEY_MUTE-LONG trigger
 ```
 
 
