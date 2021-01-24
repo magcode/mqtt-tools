@@ -12,6 +12,7 @@ After=network.target
 [Service]
 ExecStart=node $home/pollumq.js
 WorkingDirectory=$home
+SyslogIdentifier=pollumq
 StandardOutput=inherit
 StandardError=inherit
 Restart=always

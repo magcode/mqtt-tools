@@ -28,30 +28,25 @@ mqttClient.on('connect', function () {
     })
 })
 
-
 const options = { limit: 5, delay: 20000 };
 const retrier = new Retrier(options);
 
-
-
 var timer = "*/" + everyXMinutes + ' * * * *';
 cron.schedule(timer, function () {
-    retrier
-    .resolve(attempt => new Promise(
+    retrier.resolve(attempt => new Promise(
         function (resolve, reject) {
-            console.log("try...");
-            exec(binary + " -d " + usbport, (error, stdout, stderr) => {
+			exec(binary + " -d " + usbport, (error, stdout, stderr) => {
                 if (error) {
-                    console.log(`error: ${error.message}`);
+                    console.error(`error: ${error.message}`);
                     reject("Error")
                 }
                 if (stderr) {
-                    console.log(`stderr: ${stderr}`);
+                    console.error(`stderr: ${stderr}`);
                     reject("Error")
                 }
                 var lines = stdout.toString().split('\n');
 
-                if (lines.includes("No data")) {
+                if (lines.includes("No data")) {                    
                     reject("No data")
                 }
 
@@ -62,15 +57,17 @@ cron.schedule(timer, function () {
                         data[string[0]] = string[1];
                     }
                 });
-                Object.keys(data).forEach(function (key, index) {
-                    var top = topic + "/" + key;
-                    mqttClient.publish(top, data[key])
-                });
-                resolve('OK!')
+				resolve(data)
             });
         })
     )
     .then(
+		result => {
+                Object.keys(result).forEach(function (key, index) {
+                    var top = topic + "/" + key
+                    mqttClient.publish(top, result[key])
+                });
+		},
         error => console.error(error)
     );
 });
