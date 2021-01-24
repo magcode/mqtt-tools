@@ -12,12 +12,14 @@ You need to [install NodeJS before](https://nodejs.org/en/download/package-manag
 cd ~
 git clone git@github.com:magcode/mqtt-tools.git
 cd mqtt-tools/vieramq
+```
+
+Now configure the file `mqtt-tools/vieramq/config/default.json`
+
+```
 npm install
 sudo node install.js
 ```
-
-# Configuration
-Change the file `mqtt-tools/vieramq/config/default.json`
 
 # Start/stop
 ```
