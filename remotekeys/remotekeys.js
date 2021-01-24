@@ -6,7 +6,7 @@ var moment = require('moment');
 var buffer = []
 var testmode = false
 
-var config = yaml_config.load(__dirname + 'config.yml');
+var config = yaml_config.load(__dirname + '/config.yml');
 const topic = config.mqtt.topic;
 const broker = config.mqtt.broker;
 
@@ -16,7 +16,7 @@ console.log("Using broker: " + broker);
 console.log("Using topic: " + topic);
 console.log();
 
-var client = mqtt.connect(config.mqtt.broker);
+var mqttClient = mqtt.connect(config.mqtt.broker);
 
 mqttClient.on('connect', function () {
   console.log("Connected to MQTT broker");
@@ -88,7 +88,7 @@ function checkRelease(keyId) {
       if (testmode) {
         console.log("Shortpress " + keyId)
       } else {
-        client.publish(topic + '/' + keyId, 'trigger')
+        mqttClient.publish(topic + '/' + keyId, 'trigger')
       }
       setTimeout(function () {
         checkRelease(keyId)
@@ -97,7 +97,7 @@ function checkRelease(keyId) {
       if (testmode) {
         console.log("Longpress " + keyId)
       } else {
-        client.publish(topic + '/' + keyId + '-LONG', 'trigger')
+        mqttClient.publish(topic + '/' + keyId + '-LONG', 'trigger')
       }
       buffer = buffer.filter(keyboardEvent => keyboardEvent.key !== keyId)
     }
@@ -119,7 +119,7 @@ function keyup(keyboardEvent) {
     if (testmode) {
       console.log("Shortpress " + keyId)
     } else {
-      client.publish(topic + 'F/' + keyId, 'trigger')
+      mqttClient.publish(topic + 'F/' + keyId, 'trigger')
     }
     //}
   }
