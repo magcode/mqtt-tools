@@ -1,0 +1,20 @@
+{
+    "name": "remotekeysmq",
+    "version": "1.0.0",
+    "description": "Remote Keyboard MQTT Gateway",
+    "license": "MIT",
+    "keywords": [
+        "mqtt"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/magcode/mqtt-tools.git"
+    },
+    "dependencies": {
+        "mqtt": "latest",
+        "node-yaml-config": "latest",
+        "moment": "latest",
+        "exclusive-keyboard": "latest"
+    },
+    "main": "remotekeys.js"
+}
