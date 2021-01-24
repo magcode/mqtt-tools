@@ -97,7 +97,7 @@ home/room/remote/KEY_MUTE-LONG trigger
 
 
 ## Auto-Repeat
-Some keys /e.g. `KEY_VOLUMEUP` support auto-repeat. If you hold the key multiple MQTT messages will be triggered.
+Some keys (e.g. `KEY_VOLUMEUP`) support auto-repeat. If you hold the key multiple MQTT messages will be triggered.
 
 # Notes
 * You cannot use the mouse feature with this tool.
