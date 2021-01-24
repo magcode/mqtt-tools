@@ -14,7 +14,8 @@
         "mqtt": "latest",
         "node-yaml-config": "latest",
         "moment": "latest",
-        "exclusive-keyboard": "latest"
+        "exclusive-keyboard": "latest",
+        "node-linux": "latest"
     },
     "main": "remotekeys.js"
 }
