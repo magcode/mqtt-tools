@@ -6,7 +6,7 @@ I used a ["G20 remote control"](https://www.google.com/search?q=G20+remote+contr
 
 ![image](docs/image.jpg)
 
-You need a linux machine. It is verfied working with Debian 10.
+You need a linux machine. It is verified working with Debian 10.
 
 # Step 1: Download
 You need to [install NodeJS before](https://nodejs.org/en/download/package-manager).
