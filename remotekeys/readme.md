@@ -18,9 +18,21 @@ cd mqtt-tools/remotekeys
 ```
 
 # Step 2: configure
+You need to configure the tool in the file `config.yaml`.
 
+```
+default:
+  mqtt:
+    broker: mqtt://broker         # your mqtt broker connection
+    topic: home/room/remote       # mqtt topic
+  event1: event3                  # ID of the event #1
+  event2: event5                  # ID of the event #2
+  event3: event6                  # ID of the event #3
+  serviceuser: me                 # user name for the linux service
+```
 
 ## How to get the event id's
+The remote creates three event id's.
 
 ```
 cat /proc/bus/input/devices  | grep -P '^[NH]: ' | paste - - | grep "SG.Ltd" | grep -v "Mouse"
@@ -36,7 +48,7 @@ N: Name="SG.Ltd SG Control Mic System Control"  H: Handlers=kbd event6
 
 In this example the event id's are `event3`, `event5`, `event6`
 
-## hint for proxmox/lxc
+## Hint for proxmox/lxc
 Use something like this in your lxc `*.conf` file:
 ```
 lxc.cgroup.devices.allow: c 13:67 rwm
@@ -46,11 +58,10 @@ lxc.mount.entry: /dev/input/event5 dev/input/event13 none bind,optional,create=f
 lxc.cgroup.devices.allow: c 13:70 rwm
 lxc.mount.entry: /dev/input/event6 dev/input/event14 none bind,optional,create=file
 ```
-now in your container the event id's are: `event10`, `event13`, `event14`
+Now in your container the event id's are: `event10`, `event13`, `event14`
 
 
 # Step 3: install
-
 ```
 npm install
 sudo node install.js
@@ -75,10 +86,14 @@ sudo node uninstall.
 If you press a button you will find the following MQTT message triggered:
 
 ```
+home/room/remote/KEY_MUTE trigger
 ```
 
 ## Long press
 Long pressing a button will trigger the following MQTT message:
+```
+home/wz/remote/KEY_MUTE-LONG trigger
+```
 
 
 ## Auto-Repeat

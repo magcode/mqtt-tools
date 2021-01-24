@@ -119,7 +119,7 @@ function keyup(keyboardEvent) {
     if (testmode) {
       console.log("Shortpress " + keyId)
     } else {
-      mqttClient.publish(topic + 'F/' + keyId, 'trigger')
+      mqttClient.publish(topic + '/' + keyId, 'trigger')
     }
     //}
   }

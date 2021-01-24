@@ -1,0 +1,8 @@
+default:
+  mqtt:
+    broker: mqtt://broker
+    topic: home/room/remote
+  event1: event3
+  event2: event5
+  event3: event6
+  serviceuser: me
