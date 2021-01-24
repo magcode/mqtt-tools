@@ -2,7 +2,7 @@
 
 This tool allows you to use a cheap RF remote control as an universal input for your home automation.
 
-I used a ["G20 remote control"](https://www.google.com/search?q=G20+remote+control) which is sold as "Nvidia Shield replacement remote".
+I used a ["G20 remote control"](https://www.google.com/search?q=G20+remote+control) which is also sold as "Nvidia Shield replacement remote".
 
 ![image](docs/image.jpg)
 
