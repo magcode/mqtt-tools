@@ -6,7 +6,7 @@ var moment = require('moment');
 var buffer = []
 var testmode = false
 
-var config = yaml_config.load(__dirname + '/config.yml');
+var config = yaml_config.load(__dirname + '/config.yaml');
 const topic = config.mqtt.topic;
 const broker = config.mqtt.broker;
 
