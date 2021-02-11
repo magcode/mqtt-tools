@@ -46,7 +46,7 @@ Example things file
 ```
 Thing mqtt:topic:pihole "Pihole" (mqtt:broker:mosquitto) {
     Channels:
-        Type switch:enabled "Battery" [ commandTopic="home/pihole/status/set", stateTopic="home/pihole/status", on="enabled", off="disabled"]
+        Type switch:enabled "Pihole ON/OFF" [ commandTopic="home/pihole/status/set", stateTopic="home/pihole/status", on="enabled", off="disabled"]
 }
 ```
 
