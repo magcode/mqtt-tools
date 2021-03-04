@@ -4,6 +4,7 @@
 #include <ESP8266HTTPUpdateServer.h>
 #include "gamma.h"
 #include "hsb.h"
+#include "uptime_formatter.h"
 
 const char thingName[] = "h801";
 const char wifiInitialApPassword[] = "0000000000";
@@ -15,7 +16,7 @@ const bool debug = false;
 #define STRING_LEN 128
 #define NUMBER_LEN 32
 #define CONFIG_VERSION "h801-1"
-#define VERSION "v0.2"
+#define VERSION "v0.3"
 
 #define topWhite1 "/white1"
 #define topWhite2 "/white2"
@@ -31,8 +32,6 @@ const unsigned int PIN_WHITE2 = 4;
 // Internal status LED pin configurations
 const unsigned int STATUS_PIN_LED_GREEN = 1;
 const unsigned int STATUS_PIN_LED_RED = 5;
-
-unsigned long BOOTTIME;
 
 void handleRoot();
 void mqttMessageReceived(String &topic, String &payload);
@@ -70,14 +69,24 @@ unsigned int targetBlue = 0;
 unsigned int targetWhite1 = 0;
 unsigned int targetWhite2 = 0;
 
-IotWebConf iotWebConf(thingName, &dnsServer, &server, wifiInitialApPassword, CONFIG_VERSION);
+char redPercentC[NUMBER_LEN];
+char greenPercentC[NUMBER_LEN];
+char bluePercentC[NUMBER_LEN];
+unsigned int redPercent = 0;
+unsigned int greenPercent = 0;
+unsigned int bluePercent = 0;
 
+IotWebConf iotWebConf(thingName, &dnsServer, &server, wifiInitialApPassword, CONFIG_VERSION);
 IotWebConfParameterGroup mqttGroup = IotWebConfParameterGroup("MQTT configuration");
+IotWebConfParameterGroup ledGroup = IotWebConfParameterGroup("LED configuration");
 IotWebConfTextParameter mqttServerParam = IotWebConfTextParameter("MQTT server", "mqttServer", mqttServerValue, STRING_LEN);
 IotWebConfTextParameter mqttUserNameParam = IotWebConfTextParameter("MQTT user", "mqttUser", mqttUserNameValue, STRING_LEN);
 IotWebConfPasswordParameter mqttUserPasswordParam = IotWebConfPasswordParameter("MQTT password", "mqttPass", mqttUserPasswordValue, STRING_LEN);
 IotWebConfTextParameter mqttTopicParam = IotWebConfTextParameter("MQTT topic", "mqttTopic", mqttTopicValue, STRING_LEN);
-IotWebConfNumberParameter delayParam = IotWebConfNumberParameter("Delay", "delay", delayValueC, NUMBER_LEN);
+IotWebConfNumberParameter delayParam = IotWebConfNumberParameter("Delay", "delay", delayValueC, NUMBER_LEN, "600");
+IotWebConfNumberParameter redParam = IotWebConfNumberParameter("Red percent", "redPercent", redPercentC, NUMBER_LEN, "100", "1..100", "min='1' max='100' step='1'");
+IotWebConfNumberParameter greenParam = IotWebConfNumberParameter("Green percent", "greenPercent", greenPercentC, NUMBER_LEN, "100", "1..100", "min='1' max='100' step='1'");
+IotWebConfNumberParameter blueParam = IotWebConfNumberParameter("Blue percent", "bluePercent", bluePercentC, NUMBER_LEN, "100", "1..100", "min='1' max='100' step='1'");
 
 bool needMqttConnect = false;
 bool needReset = false;
@@ -145,7 +154,6 @@ void setup()
     Serial.set_tx(2);
   }
 
-  BOOTTIME = millis();
   log("Starting up...");
   initLEDPins();
 
@@ -153,7 +161,11 @@ void setup()
   mqttGroup.addItem(&mqttUserNameParam);
   mqttGroup.addItem(&mqttUserPasswordParam);
   mqttGroup.addItem(&mqttTopicParam);
-  mqttGroup.addItem(&delayParam);
+
+  ledGroup.addItem(&delayParam);
+  ledGroup.addItem(&redParam);
+  ledGroup.addItem(&greenParam);
+  ledGroup.addItem(&blueParam);
 
   iotWebConf.setStatusPin(STATUS_PIN_LED_GREEN);
   //iotWebConf.disableBlink();
@@ -161,6 +173,7 @@ void setup()
       [](const char *updatePath) { httpUpdater.setup(&server, updatePath); },
       [](const char *userName, char *password) { httpUpdater.updateCredentials(userName, password); });
   iotWebConf.addParameterGroup(&mqttGroup);
+  iotWebConf.addParameterGroup(&ledGroup);
   iotWebConf.setConfigSavedCallback(&configSaved);
   iotWebConf.setFormValidator(&formValidator);
   iotWebConf.setWifiConnectionCallback(&wifiConnected);
@@ -173,9 +186,15 @@ void setup()
     mqttUserPasswordValue[0] = '\0';
     mqttTopicValue[0] = '\0';
     delayValueC[0] = '\0';
+    delayValueC[0] = '\0';
+    delayValueC[0] = '\0';
+    delayValueC[0] = '\0';
   }
 
   delayValue = atoi(delayValueC);
+  redPercent = atoi(redPercentC);
+  greenPercent = atoi(greenPercentC);
+  bluePercent = atoi(bluePercentC);
   WiFi.hostname(iotWebConf.getThingName());
 
   server.on("/", handleRoot);
@@ -221,7 +240,7 @@ void loop()
   {
     lastReport = now;
     String topStat = String(mqttTopicValue) + topStatus;
-    mqttClient.publish(topStat, String(BOOTTIME));
+    mqttClient.publish(topStat, uptime_formatter::getUptime());
   }
 
   if ((micros() - lastRunColors) > delayValue)
@@ -280,12 +299,20 @@ void handleRoot()
   s += "<ul>";
   s += "<li>Version: ";
   s += VERSION;
+  s += "<li>Uptime: ";
+  s += uptime_formatter::getUptime();
   s += "<li>MQTT server: ";
   s += mqttServerValue;
   s += "<li>MQTT topic: ";
   s += mqttTopicValue;
   s += "<li>Delay: ";
   s += delayValueC;
+  s += "<li>Red percent: ";
+  s += redPercentC;
+  s += "<li>Green percent: ";
+  s += greenPercentC;
+  s += "<li>Blue percent: ";
+  s += bluePercentC;
   s += "</ul>";
   s += "<a href='config'>config</a>";
   s += "</body></html>\n";
@@ -418,7 +445,7 @@ void mqttMessageReceived(String &topicRaw, String &payload)
     unsigned int _blue = 0;
     if (hsb.toRgb(&_red, &_green, &_blue, 1023))
     {
-      setColor(_red, _green, _blue);
+      setColor(_red * redPercent / 100, _green * greenPercent / 100, _blue * bluePercent / 100);
     }
   }
 }
