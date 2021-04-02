@@ -60,6 +60,13 @@ lxc.mount.entry: /dev/input/event6 dev/input/event14 none bind,optional,create=f
 ```
 Now in your container the event id's are: `event10`, `event13`, `event14`
 
+You may need to change permissions in the container:
+```
+sudo chmod 666 /dev/input/event10
+sudo chmod 666 /dev/input/event13
+sudo chmod 666 /dev/input/event14
+```
+
 
 # Step 3: Install
 ```
