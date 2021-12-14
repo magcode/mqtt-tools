@@ -1,6 +1,7 @@
 # Auto brightness for Windows
 
 This is a simple way to auto-control the brightness of your monitor attached to a Windows machine.
+You need a light sensor which exposes the brightness value via MQTT.
 
 It is using [Monitorian](https://github.com/emoacht/Monitorian).
 
