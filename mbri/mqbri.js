@@ -16,6 +16,7 @@ console.log("Using factor: " + factor);
 console.log("Using monitorId: " + monitorId);
 
 var mqttClient = mqtt.connect(broker);
+var currentValue = 0;
 
 mqttClient.on("connect", function () {
 	console.log("Connected to mqtt broker");
@@ -29,13 +30,17 @@ mqttClient.on('message', function (inTopic, message, packet) {
 			val = val * factor;
 			valInt = Math.round(val);
 			if (valInt > 100) { valInt = 100 }
-			var command = '%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Monitorian.exe /set "' + monitorId + '" ' + valInt;
-			console.log("Running: %s, orig value: %s", command, message);
+			if (currentValue != valInt) {
+				var command = '%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Monitorian.exe /set "' + monitorId + '" ' + valInt;
+				console.log("Running: %s, orig value: %s", command, message);
+				currentValue = valInt
+				var child = exec(command, function (error, stdout, stderr) {
+					console.log(stdout);
+					if (error != null) {
+						console.log(stderr);
+					}
+				});
+			}
 
-			var child = exec(command, function (error, stdout, stderr) {
-				if (error != null) {
-					console.log(stderr);
-				}
-			});
 	}
-});g
+});

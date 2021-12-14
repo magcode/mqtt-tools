@@ -1,6 +1,6 @@
 {
     "name": "mqbri",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "bin": "./mqbri.js",
     "description": "Auto brightness for Windows",
     "license": "MIT",
@@ -13,7 +13,6 @@
         "url": "git+https://github.com/magcode/mqtt-tools.git"
     },
     "dependencies": {
-        "config": "latest",
         "mqtt": "latest"
     },
     "pkg": {
