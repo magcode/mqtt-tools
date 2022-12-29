@@ -14,7 +14,7 @@ default:
     172: KEY_HOMEPAGE
     240: KEY_NETFLIX
     207: KEY_PRIME
-  multiSupport:
+  autoRepeat:
     - KEY_VOLUMEDOWN
     - KEY_VOLUMEUP
     - KEY_DOWN
