@@ -1,8 +1,30 @@
 default:
   mqtt:
-    broker: mqtt://broker
+    broker: mqtt://broker.lan
     topic: home/room/remote
-  event1: event3
-  event2: event5
-  event3: event6
+  events:
+    - event6
+    - event7
+  customKeys:
+    582: KEY_MIC
+    163: KEY_NEXTSONG
+    164: KEY_PLAYPAUSE
+    165: KEY_PREVIOUSSONG
+    158: KEY_BACK
+    172: KEY_HOMEPAGE
+    240: KEY_NETFLIX
+    207: KEY_PRIME
+  multiSupport:
+    - KEY_VOLUMEDOWN
+    - KEY_VOLUMEUP
+    - KEY_DOWN
+    - KEY_UP
+    - KEY_LEFT
+    - KEY_RIGHT
   serviceuser: me
+  testmode: false
+  logging:
+    console: true
+    loki: true
+    level: info
+    lokiUrl: http://my.loki:3100
