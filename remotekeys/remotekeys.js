@@ -52,7 +52,7 @@ logger.info("Using broker: " + broker);
 logger.info("Using topic: " + topic);
 if (testmode) logger.info("Testmode enabled, will not send MQTT messages.");
 customkeys = config.customKeys
-multiSupport = config.multiSupport
+autoRepeat = config.autoRepeat
 
 
 config.events.forEach(element => {
@@ -105,7 +105,7 @@ function keydown(keyboardEvent) {
   logger.debug(`keydown Added ${keyId} with timestamp ${timestamp}`);
   buffer.push(bevent)
 
-  if (multiSupport.includes(keyboardEvent.keyCode)) {
+  if (autoRepeat.includes(keyboardEvent.keyCode)) {
     setTimeout(function () {
       checkRelease(keyId)
     }, repeatTime);
@@ -122,7 +122,7 @@ function keydown(keyboardEvent) {
 function checkRelease(keyId) {
   const result = buffer.find(keyboardEvent => keyboardEvent.key === keyId);
   if (result) {
-    if (multiSupport.includes(keyId)) {
+    if (autoRepeat.includes(keyId)) {
       if (testmode) {
         logger.info("Shortpress " + keyId)
       } else {
@@ -152,8 +152,6 @@ function keyup(keyboardEvent) {
   const result = buffer.find(keyboardEvent => keyboardEvent.key === keyId);
   if (result) {
     buffer = buffer.filter(keyboardEvent => keyboardEvent.key !== keyId)
-
-    //if (! multiSupport.includes(keyId)) {
     if (testmode) {
       logger.info("Shortpress " + keyId)
     } else {
