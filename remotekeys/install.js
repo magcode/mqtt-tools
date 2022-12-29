@@ -8,6 +8,7 @@ var svc = new Service({
   name:'remotekeys',
   description: 'Remote Keyboard MQTT Gateway',
   script: __dirname + '/remotekeys.js',
+  group: 'input',
   WorkingDirectory: __dirname,
   user: config.serviceuser
 });

@@ -1,69 +1,108 @@
-var yaml_config = require('node-yaml-config');
+var yamlConfig = require('node-yaml-config');
+const { createLogger, transports, format } = require('winston');
 const ExclusiveKeyboard = require('exclusive-keyboard');
+const LokiTransport = require('winston-loki');
+const process = require('node:process');
 var mqtt = require('mqtt')
 var moment = require('moment');
 
 var buffer = []
-var testmode = false
+var keyboards = []
 
-var config = yaml_config.load(__dirname + '/config.yaml');
+const longPressTime = 400
+const repeatTime = 250
+
+var config = yamlConfig.load(__dirname + '/config.yaml');
+
+const testmode = config.testmode
 const topic = config.mqtt.topic;
 const broker = config.mqtt.broker;
+const loggingConsole = config.logging.console
+const loggingLoki = config.logging.loki
+const loggingLevel = config.logging.level
+
+var loggingTransports = []
+if (loggingConsole || !loggingLoki) {
+  var transportCon = new transports.Console({
+    format: format.combine(
+      format.colorize(),
+      format.timestamp(),
+      format.printf(({ level, message, timestamp }) => {
+        return `${timestamp} ${level}: ${message}`;
+      }),
+    )
+  });
+  loggingTransports.push(transportCon);
+}
+
+if (loggingLoki) {
+  var transportLok = new LokiTransport({
+    host: config.logging.lokiUrl,
+    labels: { appname: "remotekeys", monitor: "grafana" },
+    batching: false,
+    gracefulShutdown: false
+  });
+  loggingTransports.push(transportLok);
+}
+
+const logger = createLogger({ level: loggingLevel, transports: loggingTransports });
+
+logger.info("Remotekeys MQTT interface");
+logger.info("Using broker: " + broker);
+logger.info("Using topic: " + topic);
+if (testmode) logger.info("Testmode enabled, will not send MQTT messages.");
+customkeys = config.customKeys
+multiSupport = config.multiSupport
 
 
-console.log("Remotekeys MQTT interface");
-console.log("Using broker: " + broker);
-console.log("Using topic: " + topic);
-console.log();
+config.events.forEach(element => {
+  try {
+    logger.info("Adding keyboard " + element)
+    const keyboard = new ExclusiveKeyboard(element, true);
+    keyboard.on('error', keyboardError);
+    keyboard.on('keyup', keyup);
+    keyboard.on('keypress', keydown);
+    keyboard.on('close', keyboardClose);
+    keyboards.push(keyboard);
+  } catch (error) {
+    logger.error(error);
+  }
+});
+
 
 var mqttClient = mqtt.connect(config.mqtt.broker);
 
 mqttClient.on('connect', function () {
-  console.log("Connected to MQTT broker");
+  logger.info("Connected to MQTT broker");
 })
 
-const keyboard1 = new ExclusiveKeyboard(config.event1, true);
-const keyboard2 = new ExclusiveKeyboard(config.event2, true);
-const keyboard3 = new ExclusiveKeyboard(config.event3, true);
+mqttClient.on('close', function () {
+  logger.info("MQTT connection closed")
+})
 
-var longPressTime = 400
-var repeatTime = 250
+mqttClient.on('error', function (error) {
+  logger.error("MQTT connection error " + error)
+})
 
-customkeys = {
-  '582': 'KEY_MIC',
-  '163': 'KEY_NEXTSONG',
-  '164': 'KEY_PLAYPAUSE',
-  '165': 'KEY_PREVIOUSSONG',
-  '158': 'KEY_BACK',
-  '172': 'KEY_HOMEPAGE'
-};
+function keyboardError(error) {
+  logger.error("Got keyboard error %s", error)
+  console.error("Got keyboard error %s", error)
+}
 
-multiSupport = ['KEY_VOLUMEDOWN',
-  'KEY_VOLUMEUP',
-  'KEY_DOWN',
-  'KEY_UP',
-  'KEY_LEFT',
-  'KEY_RIGHT']
-
-keyboard1.on('keyup', keyup);
-keyboard2.on('keyup', keyup);
-keyboard3.on('keyup', keyup);
-
-keyboard1.on('keypress', keydown);
-keyboard2.on('keypress', keydown);
-keyboard3.on('keypress', keydown);
-
-console.log("Started");
+function keyboardClose() {
+  logger.info("Keyboard closed");
+}
 
 function keydown(keyboardEvent) {
   var timestamp = moment().format('x')
   var keyId = keyboardEvent.keyId
-  if (!keyId) {
+
+  if (customkeys[keyboardEvent.keyCode] || !keyId) {
     keyId = customkeys[keyboardEvent.keyCode];
   }
 
   var bevent = { key: keyId, time: timestamp }
-  //console.log('Added ' + keyId + ' with timestamp ' + timestamp)
+  logger.debug(`keydown Added ${keyId} with timestamp ${timestamp}`);
   buffer.push(bevent)
 
   if (multiSupport.includes(keyboardEvent.keyCode)) {
@@ -75,7 +114,6 @@ function keydown(keyboardEvent) {
       checkRelease(keyId)
     }, longPressTime);
   }
-
 }
 
 
@@ -86,7 +124,7 @@ function checkRelease(keyId) {
   if (result) {
     if (multiSupport.includes(keyId)) {
       if (testmode) {
-        console.log("Shortpress " + keyId)
+        logger.info("Shortpress " + keyId)
       } else {
         mqttClient.publish(topic + '/' + keyId, 'trigger')
       }
@@ -95,7 +133,7 @@ function checkRelease(keyId) {
       }, repeatTime);
     } else {
       if (testmode) {
-        console.log("Longpress " + keyId)
+        logger.info("Longpress " + keyId)
       } else {
         mqttClient.publish(topic + '/' + keyId + '-LONG', 'trigger')
       }
@@ -106,8 +144,8 @@ function checkRelease(keyId) {
 
 function keyup(keyboardEvent) {
   var keyId = keyboardEvent.keyId
-  //console.log(keyboardEvent.keyCode);
-  if (!keyId) {
+  logger.debug(`keyup ${keyId}`);
+  if (customkeys[keyboardEvent.keyCode] || !keyId) {
     keyId = customkeys[keyboardEvent.keyCode];
   }
 
@@ -117,10 +155,34 @@ function keyup(keyboardEvent) {
 
     //if (! multiSupport.includes(keyId)) {
     if (testmode) {
-      console.log("Shortpress " + keyId)
+      logger.info("Shortpress " + keyId)
     } else {
       mqttClient.publish(topic + '/' + keyId, 'trigger')
     }
     //}
   }
 }
+
+
+process.on('exit', () => {
+  // Workaround for the process not terminating on process.exit() due to input-event
+  // calling fs.createReadStream() (which, for unknown reason, prevents exit).
+  process.kill(process.pid, 'SIGTERM');
+});
+
+function handleExit(signal) {
+  logger.info(`Received ${signal}. Shutdown.`)
+  mqttClient.end();
+  keyboards.forEach(element => {
+    logger.info(`Closing ${element.dev}`);
+    element.close();
+  })
+
+  setTimeout(function () {
+    logger.info("Stopped.");
+    logger.close();
+    process.exit(0);
+  }, 2000);
+}
+process.on('SIGINT', handleExit);
+process.on('SIGQUIT', handleExit);

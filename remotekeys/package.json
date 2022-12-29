@@ -1,6 +1,6 @@
 {
     "name": "remotekeysmq",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Remote Keyboard MQTT Gateway",
     "license": "MIT",
     "keywords": [
@@ -15,7 +15,9 @@
         "node-yaml-config": "latest",
         "moment": "latest",
         "exclusive-keyboard": "latest",
-        "node-linux": "latest"
+        "node-linux": "latest",
+        "winston": "latest",
+        "winston-loki" : "latest"
     },
     "main": "remotekeys.js"
 }
