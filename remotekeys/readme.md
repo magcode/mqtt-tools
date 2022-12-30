@@ -27,7 +27,9 @@ You need to configure the tool in the file `config.yaml`.
 ```
 default:
   mqtt:
-    broker: mqtt://broker         # your mqtt broker connection
+    broker: mqtt://brokerIP       # your mqtt broker connection
+                                  # you can also use 
+                                  # mqtt://username:password@brokerIP
     topic: home/room/remote       # mqtt topic
   events:
     - event6                      # ID of the event #1
