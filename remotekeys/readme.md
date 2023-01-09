@@ -13,7 +13,7 @@ Tested with
 You need a linux machine. It is verified working with Debian 10.
 
 # Step 1: Download
-You need to [install NodeJS before](https://nodejs.org/en/download/package-manager).
+You need to [install NodeJS >=v16 before](https://nodejs.org/en/download/package-manager).
 
 ```
 cd ~
