@@ -1,0 +1,20 @@
+{
+  "name": "switchbotmq",
+  "version": "0.0.1",
+  "dependencies": {
+    "node-switchbot": "1.8.0",
+    "mqtt": "latest",
+    "node-schedule": "latest",
+    "node-linux": "latest",
+    "winston": "latest",
+    "winston-daily-rotate-file": "latest",
+    "winston-logrotate": "latest",
+    "winston-loki": "latest",
+    "config": "latest"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "devDependencies": {},
+  "main": "switchbotmq.js"
+}
