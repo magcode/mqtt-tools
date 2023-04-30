@@ -10,6 +10,7 @@
     "winston-daily-rotate-file": "latest",
     "winston-logrotate": "latest",
     "winston-loki": "latest",
+    "winston-syslog": "latest",
     "config": "latest"
   },
   "engines": {
