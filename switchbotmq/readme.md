@@ -1,5 +1,3 @@
-WIP
-
 # Switchbot Temperature Sensor BLE MQTT gateway
 
 This tool reads Switchbot Temperature Sensor data and publishes it via MQTT.
