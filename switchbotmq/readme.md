@@ -14,24 +14,56 @@ cd mqtt-tools/switchbotmq
 ```
 
 # Step 2: Configure
-You need to configure the tool 
+You need to configure the tool in the file `config/default.json`
 
-# Step 3: Install
+Example file:
 ```
-npm install
-sudo node install.js
+{
+  "name": "switchbotmq",
+  "mqtt": {
+    "broker": "tcp://broker",
+    "port": 1883,
+    "user": "",
+    "password": "",
+    "topic": "home/temperaturessb"
+  },
+  "logging": {
+    "console": {
+      "enabled": false,
+      "level": "debug"
+    },
+    "file": {
+      "enabled": false,
+      "level": "debug"
+    },
+    "syslog": {
+      "enabled": false,
+      "level": "debug",
+      "host": "localhost",
+      "port": 50514,
+      "protocol": "udp4",
+      "type": "5424"
+    },
+    "loki": {
+      "enabled": true,
+      "level": "info",
+      "url": "http://loggingserver:3100",
+      "labels": {
+        "monitor": "grafana"
+      }
+    }
+  }
+}
 ```
 
-# Start/stop
+# Step 4: Run
+The process will run, wait for sensor values and exit.
+
 ```
-sudo service switchbotmq start
-sudo service switchbotmq stop
+/usr/bin/node switchbotmqs.js
 ```
 
-# Uninstall
+Example for your crontab file
 ```
-sudo service remotekeys stop
-cd ~/mqtt-tools/remotekeys
-sudo node uninstall.
+*/5 * * * * cd /home/me/mqtt-tools/switchbotmq && /usr/bin/node /home/me/mqtt-tools/switchbotmq/switchbotmqs.js
 ```
-
