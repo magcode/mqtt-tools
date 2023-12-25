@@ -11,8 +11,12 @@ var keyboards = []
 
 const longPressTime = 400
 const repeatTime = 250
-
-var config = yamlConfig.load(__dirname + '/config.yaml');
+var config
+if (process.argv[2]) {
+  config = yamlConfig.load(process.argv[2]);
+} else {
+  config = yamlConfig.load(__dirname + '/config.yaml');
+}
 
 const testmode = config.testmode
 const topic = config.mqtt.topic;
