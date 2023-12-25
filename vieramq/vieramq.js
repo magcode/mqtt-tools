@@ -7,6 +7,9 @@ const viera = new Viera();
 const vieraIP = config.get('vieraIP');
 const broker = config.get('mqtt.broker');
 const topic = config.get('mqtt.topic');
+const topicCommand = topic+"/command/set";
+const topicAppCommand = topic+"/appcommand/set";
+const volumeCommand = topic+"/volume/set";
 
 
 console.log("Viera MQTT interface");
@@ -19,22 +22,33 @@ var mqttClient  = mqtt.connect(broker);
 
 mqttClient.on("connect",function(){	
   console.log("Connected to mqtt broker");
-  mqttClient.subscribe(topic);
+  mqttClient.subscribe(topicCommand);
+  mqttClient.subscribe(topicAppCommand);
+  mqttClient.subscribe(volumeCommand);
 })
 
 mqttClient.on('message', (topic, message) => {
+  //console.log("topic:" + topic + " message:" + message)
   switch (topic) {
-    case topic:
-      return handleVieraCommand(message)
+    case topicCommand:
+      return handleVieraCommand("key",message)
+    case volumeCommand:
+      return handleVieraCommand("volume",message)
+    case topicAppCommand:
+      return handleVieraCommand("appcommand","" + message)
   } 
   console.warn('No handler for topic %s', topic)
 })
 
-function handleVieraCommand (message) {
-    console.log(VieraKeys.hasOwnProperty(message));
-    console.log(VieraKeys[message]);
+function handleVieraCommand (type, message) {
     viera.connect(vieraIP).then(() => {
-        return viera.sendKey(VieraKeys[message]);
+        if (type=="key") {
+          return viera.sendKey(VieraKeys[message]);
+        } else if (type=="appcommand") {
+          return viera.sendAppCommand(message);
+        } else if (type=="volume") {
+          return viera.setVolume(parseInt(message));
+        }
     }).catch((error) => {
         console.log(error);
     });

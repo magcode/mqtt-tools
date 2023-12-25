@@ -13,10 +13,10 @@
         "url": "git+https://github.com/jens-maus/node-panasonic-viera.git"
     },
     "dependencies": {
-        "mqtt": "latest",
-        "node-panasonic-viera": "latest",
         "config": "latest",
-        "node-linux": "latest"
+        "mqtt": "latest",
+        "node-linux": "latest",
+        "node-panasonic-viera": "github:jens-maus/node-panasonic-viera"
     },
     "main": "vieramq.js"
 }
