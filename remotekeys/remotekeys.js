@@ -3,6 +3,7 @@ const { createLogger, transports, format } = require('winston');
 const ExclusiveKeyboard = require('exclusive-keyboard');
 const LokiTransport = require('winston-loki');
 const process = require('node:process');
+const fs = require('node:fs');
 var mqtt = require('mqtt')
 var moment = require('moment');
 
@@ -58,8 +59,12 @@ if (testmode) logger.info("Testmode enabled, will not send MQTT messages.");
 customkeys = config.customKeys
 autoRepeat = config.autoRepeat
 
+var events = getEventIDs(config.deviceNameFilter);
+if (events.length < 1) {
+  logger.error("Could not find eventIds for {}", config.deviceNameFilter);
+}
 
-config.events.forEach(element => {
+events.forEach(element => {
   try {
     logger.info("Adding keyboard " + element)
     const keyboard = new ExclusiveKeyboard(element, true);
@@ -171,6 +176,38 @@ process.on('exit', () => {
   // calling fs.createReadStream() (which, for unknown reason, prevents exit).
   process.kill(process.pid, 'SIGTERM');
 });
+
+function getEventIDs(device) {
+  try {
+    const data = fs.readFileSync('/proc/bus/input/devices', 'utf8');
+    const regexpSize = /(event[0-9]+)/;
+    var kbEvents = []
+
+    data.split("I: ").forEach(section => {
+      var found = false;
+      section.split(/\r?\n/).forEach(line => {
+        if (line.startsWith("N:") && line.includes(device)) {
+          logger.info(`Found input device: ${line}`);
+          found = true
+        }
+      });
+
+      if (found) {
+        section.split(/\r?\n/).forEach(line => {
+          if (line.startsWith("H: ") && line.includes("kbd")) {
+            const match = line.match(regexpSize);
+            kbEvents.push(match[0])
+          }
+        });
+      }
+
+    });
+    return kbEvents;
+  } catch (err) {
+    logger.error(err);
+    return [];
+  }
+}
 
 function handleExit(signal) {
   logger.info(`Received ${signal}. Shutdown.`)

@@ -31,9 +31,7 @@ default:
                                   # you can also use 
                                   # mqtt://username:password@brokerIP
     topic: home/room/remote       # mqtt topic
-  events:
-    - event6                      # ID of the event #1
-    - event7                      # ID of the event #2
+  deviceNameFilter: Xiaomi        # Part of the device name as shows up under /proc/bus/input/devices
   customKeys:                     # see below
     582: KEY_MIC
     163: KEY_NEXTSONG
@@ -65,22 +63,9 @@ In case your remote sends unknown key id's you can map them in this section.
 ## Auto repeat
 For some keys (e.g. `KEY_VOLUMEUP`) you may want auto-repeat. If you hold the key multiple MQTT messages will be triggered.
 
-## How to get the event id's
-The G20 remote creates three event id's.
-
-```
-cat /proc/bus/input/devices  | grep -P '^[NH]: ' | paste - - | grep "SG.Ltd" | grep -v "Mouse"
-```
-
-It will return something like
-
-```
-N: Name="SG.Ltd SG Control Mic" H: Handlers=sysrq kbd event3 leds
-N: Name="SG.Ltd SG Control Mic Consumer Control"        H: Handlers=kbd event5
-N: Name="SG.Ltd SG Control Mic System Control"  H: Handlers=kbd event6
-```
-
-In this example the event id's are `event3`, `event5`, `event6`
+## deviceNameFilter
+Provide a part of the device name as shown under /proc/bus/input/devices.
+Examples: `Xiaomi` or `SG.Ltd`
 
 ## Get Bluetooth remote connected
 You need to pair and connect your Bluetooth remote before you can use it with this tool.
@@ -99,7 +84,6 @@ lxc.mount.entry: /dev/input/event5 dev/input/event13 none bind,optional,create=f
 lxc.cgroup.devices.allow: c 13:70 rwm
 lxc.mount.entry: /dev/input/event6 dev/input/event14 none bind,optional,create=file
 ```
-Now in your container the event id's are: `event10`, `event13`, `event14`
 
 You may need to change permissions in the container:
 ```
