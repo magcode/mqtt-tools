@@ -20,11 +20,11 @@ const mqPass = mqttConfig.get('password');
 
 var mqttClient = mqtt.connect(broker, { "clientId": progName, "port": mqPort, "username": mqUser, "password": mqPass });
 mqttClient.on("connect", function () {
-  logger.info("Connected to MQTT broker");
+  logger.debug("Connected to MQTT broker");
 })
 
 mqttClient.on("close", function () {
-  logger.info("MQTT disconnected");
+  logger.debug("MQTT disconnected");
 })
 
 mqttClient.on('error', function (error) {
@@ -62,7 +62,7 @@ switchbot
         val = ad.serviceData.battery.toString();
         logger.debug("Publishing %s to %s", val, mtopic);
         mqttClient.publish(mtopic, val);
-        logger.info("OK");
+        logger.info("OK, sent data.");
       };
     }
     // Wait 10 seconds
