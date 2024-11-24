@@ -1,0 +1,4 @@
+aiomqtt
+adb-shell[async]
+colorlog
+python-logging-loki

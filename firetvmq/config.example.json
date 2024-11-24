@@ -1,0 +1,14 @@
+{
+    "MQTT_HOST": "mybroker",
+    "MQTT_PORT": 1883,
+    "MQTT_USERNAME": "",
+    "MQTT_PASSWORD": "",
+    "MQTT_TOPIC": "home/firetv",
+    "FIRETV_ADDRESS": "192.168.1.100",
+    "FIRETV_PORT": "5555",
+    "ADB_KEY_PATH": "/home/user/.android/adbkey",
+    "LOG_LEVEL": "DEBUG",
+    "LOG_CONSOLE": true,
+    "LOG_LOKI": false,
+    "LOKI_URL": "http://myloki:3100"
+}
