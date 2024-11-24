@@ -34,7 +34,7 @@ async def connectFireTv():
 async def sendStatus(online, nowPlaying=None, app=None):
     if mqttClient:
         if nowPlaying:
-            await mqttClient.publish(topic + "/status", payload=nowPlaying)
+            await mqttClient.publish(topic + "/status/nowplaying", payload=nowPlaying)
         if app:
             await mqttClient.publish(topic + "/app", payload=app)
         if online:
@@ -88,9 +88,12 @@ async def setupMQTT(host, port, user, password):
                     )
                 if message.topic.matches(startTopic) and payload == "prime":
                     fireTV.shell(
-                        "am start com.amazon.avod.thirdpartyclient/com.amazon.avod.client.activity.HomeScreenActivity"
+                        "am start com.amazon.firebat/com.amazon.firebatcore.deeplink.DeepLinkRoutingActivity"
                     )
-
+                if message.topic.matches(startTopic) and payload == "xbox":
+                    fireTV.shell(
+                        "am start gamepass.fire.tv/.MainActivity"
+                    )
     except asyncio.CancelledError:
         logger.info("mqtt task cancelled")
 
