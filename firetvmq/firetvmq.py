@@ -53,7 +53,7 @@ async def watchConnection():
         except asyncio.CancelledError:
             logger.debug("Connection Watcher shutdown")
 
-        if fireTV.available:
+        if fireTV and fireTV.available:
             try:
                 playing = fireTV.shell(
                     "dumpsys media_session | grep -A 7 active=true | grep -A 4 state=PLAYING | grep metadata"
@@ -75,7 +75,7 @@ async def watchConnection():
 async def setupMQTT(host, port, user, password):
     global mqttClient
     try:
-        async with aiomqtt.Client(bind_port=port, password=password, username=user, hostname=host) as client:
+        async with aiomqtt.Client(port=port, password=password, username=user, hostname=host) as client:
             mqttClient = client
             startTopic = topic + "/command/startapp"
             await client.subscribe(startTopic)
