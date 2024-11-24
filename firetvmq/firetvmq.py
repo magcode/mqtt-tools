@@ -11,7 +11,7 @@ from my_logging import setupLogging
 
 async def connectFireTv():
     global fireTV
-    logger.info("Connect attempt")
+    logger.debug("Connect attempt")
     # Load the public and private keys
     adbkey = config["ADB_KEY_PATH"]
     with open(adbkey) as f:
@@ -28,7 +28,8 @@ async def connectFireTv():
         response1 = fireTV.shell("echo 'Connect OK'")
         logger.info(response1)
     except Exception as e:
-        logger.info(f"Connection failed: {e}")
+        logger.debug(f"Connection failed: {e}")
+        await sendStatus(online=False, nowPlaying=None, app=None)
 
 
 async def sendStatus(online, nowPlaying=None, app=None):
@@ -38,11 +39,13 @@ async def sendStatus(online, nowPlaying=None, app=None):
         if app:
             await mqttClient.publish(topic + "/app", payload=app)
         if online:
-            logger.debug("Connection Watcher OK")
-            await mqttClient.publish(topic + "/status", payload=nowPlaying)
+            logger.debug("Connection Watcher: Fire TV connection is OK")
+            await mqttClient.publish(topic + "/status", payload="online")
         else:
-            logger.error("Connection Watcher Not connected")
+            logger.debug("Connection Watcher: Fire TV not connected currently.")
             await mqttClient.publish(topic + "/status", payload="offline")
+    else:
+        logger.warning("No MQTT Client")
 
 
 async def watchConnection():
@@ -63,12 +66,12 @@ async def watchConnection():
                 )
                 await sendStatus(online=True, nowPlaying=playing, app=app)
             except Exception as e:
-                logger.info(f"Connection error: {e}")
+                logger.debug(f"Connection error: {e}")
                 await connectFireTv()
             except aiomqtt.exceptions.MqttCodeError as err:
-                logger.info("mqtt error: " + str(err))
+                logger.warning("mqtt error: " + str(err))
         else:
-            logger.info("connection not available")
+            logger.debug("connection not available")
             await connectFireTv()
 
 
@@ -82,18 +85,20 @@ async def setupMQTT(host, port, user, password):
             async for message in client.messages:
                 payload = message.payload.decode()
                 logger.debug(f"received {payload} on {message.topic}")
-                if message.topic.matches(startTopic) and payload == "disney":
-                    fireTV.shell(
-                        "am start -a android.intent.action.VIEW -n com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity"
-                    )
-                if message.topic.matches(startTopic) and payload == "prime":
-                    fireTV.shell(
-                        "am start com.amazon.firebat/com.amazon.firebatcore.deeplink.DeepLinkRoutingActivity"
-                    )
-                if message.topic.matches(startTopic) and payload == "xbox":
-                    fireTV.shell(
-                        "am start gamepass.fire.tv/.MainActivity"
-                    )
+                if fireTV and fireTV.available:
+                    try:
+                        if message.topic.matches(startTopic) and payload == "disney":
+                            fireTV.shell(
+                                "am start -a android.intent.action.VIEW -n com.disney.disneyplus/com.bamtechmedia.dominguez.main.MainActivity"
+                            )
+                        if message.topic.matches(startTopic) and payload == "prime":
+                            fireTV.shell(
+                                "am start com.amazon.firebat/com.amazon.firebatcore.deeplink.DeepLinkRoutingActivity"
+                            )
+                        if message.topic.matches(startTopic) and payload == "xbox":
+                            fireTV.shell("am start gamepass.fire.tv/.MainActivity")
+                    except Exception as e:
+                        logger.info(f"Connection error: {e}")
     except asyncio.CancelledError:
         logger.info("mqtt task cancelled")
 
