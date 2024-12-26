@@ -1,0 +1,24 @@
+{
+    "mqtt": {
+        "brokerHost": "mybroker.local.lan",
+        "brokerPort": 1883,
+        "topic": "home/awtrix1/stats"
+    },
+    "sensor": {
+        "jsonPath": "ldr_raw"
+    },
+    "monitors": {
+        "default": {
+            "factor": 0.25,
+            "offset": -20
+        },
+        "Lenovo P32p-20": {
+            "factor": 0.25,
+            "offset": -30
+        },
+        "HP1": {
+            "factor": 0.25,
+            "offset": -10
+        }
+    }
+}
