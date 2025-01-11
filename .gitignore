@@ -1,3 +1,4 @@
 .vscode/launch.json
 switchbotmq/config/default.json
 firetvmq/config.json
+moco/configuration.json
