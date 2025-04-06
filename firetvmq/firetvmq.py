@@ -102,8 +102,10 @@ async def setupMQTT(host, port, user, password):
                             fireTV.shell("am start com.apple.atve.amazon.appletv/.MainActivity")
 
                         if message.topic.matches(startTopic) and payload == "zdf":
-                            fireTV.shell("am start com.zdf.android.mediathek/com.zdf.android.mediathek.ui.common.MainActivity")                           
-                            
+                            fireTV.shell("am start com.zdf.android.mediathek/com.zdf.android.mediathek.ui.common.MainActivity")
+
+                        if message.topic.matches(startTopic) and payload == "ard":
+                            fireTV.shell("am start de.swr.ard.avp.mobile.android.amazon/.TvActivity")
                     except Exception as e:
                         logger.info(f"Connection error: {e}")
     except asyncio.CancelledError:
