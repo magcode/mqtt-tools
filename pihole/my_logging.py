@@ -1,3 +1,4 @@
+
 import colorlog
 from colorlog import ColoredFormatter
 from logging_loki import LokiHandler, emitter

@@ -1,0 +1,4 @@
+gmqtt
+pihole6api
+colorlog
+python-logging-loki

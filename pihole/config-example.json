@@ -1,0 +1,13 @@
+{
+    "MQTT_HOST": "my.broker.lan",
+    "MQTT_PORT": 1883,
+    "MQTT_USERNAME": "",
+    "MQTT_PASSWORD": "",
+    "MQTT_TOPIC": "home/pihole/status",
+    "PIHOLE_URL": "https://192.168.0.2/",
+    "PIHOLE_PASSWORD": "mypiholepassword",
+    "LOG_LEVEL": "INFO",
+    "LOG_CONSOLE": true,
+    "LOG_LOKI": true,
+    "LOKI_URL": "http://logserver.lan:3100"
+}

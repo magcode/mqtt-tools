@@ -1,9 +1,0 @@
-{
-  "mqtt": {
-    "broker": "mqtt://broker",
-    "topic": "home/pihole"
-  },
-  "piHolePassword": "",
-  "piHoleIP": "",
-  "serviceuser": "me"
-}

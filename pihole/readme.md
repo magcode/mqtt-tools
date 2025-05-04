@@ -1,21 +1,23 @@
-# Pi-hole MQTT interface
+# Pi-hole 6 MQTT interface
 
 This is a simple MQTT interface to control Pi-hole
 
 # Install
 This guide is for running on linux.
-You need to [install NodeJS before](https://nodejs.org/en/download/package-manager).
+Check below code and file `install-as-service.sh` and adapt to your needs.
 
 ```
 cd ~
+source ~/pythonenv/bin/activate
 git clone git@github.com:magcode/mqtt-tools.git
 cd mqtt-tools/pihole
-npm install
-sudo node install.js
+pip install -r /path/to/requirements.txt
+sudo install-as-service.sh
+
 ```
 
 # Configuration
-Change the file `mqtt-tools/pihole/config/default.json`
+Create a copy `config.json` from file `mqtt-tools/pihole/config-example.json` and make your changes.
 
 # Start/stop
 ```
@@ -23,20 +25,21 @@ sudo service piholemqtt start
 sudo service piholemqtt stop
 ```
 
-# Sending en
+# Control Pi-hole
 
 This is an example how you can control Pi-hole with MQTT:
 
 ```
-mosquitto_pub -h broker -t '<mytopic>/status/set' -m 'disabled'
-mosquitto_pub -h broker -t '<mytopic>/status/set' -m 'enabled'
+mosquitto_pub -h broker -t '<mytopic>/status/set' -m 'ON'
+mosquitto_pub -h broker -t '<mytopic>/status/set' -m 'OFF'
 ```
 
 # Uninstall
 ```
 sudo service piholemqtt stop
-cd ~/mqtt-tools/pihole
-sudo node uninstall.
+sudo systemctl disable piholemqtt.service
+sudo systemctl daemon-reload
+sudo rm /etc/systemd/system/piholemqtt.service
 ```
 
 
@@ -46,11 +49,11 @@ Example things file
 ```
 Thing mqtt:topic:pihole "Pihole" (mqtt:broker:mosquitto) {
     Channels:
-        Type switch:enabled "Pihole ON/OFF" [ commandTopic="home/pihole/status/set", stateTopic="home/pihole/status", on="enabled", off="disabled"]
+        Type switch:enabled "Pihole enabled" [ commandTopic="home/pihole/status/set", stateTopic="home/pihole/status"]
 }
 ```
 
 Example items file
 ```
-Switch switchPiHole "Pihole" { channel="mqtt:topic:pihole:enabled"}
+Switch switchPiHole "Pihole Blocking" {channel="mqtt:topic:pihole:enabled"}
 ```

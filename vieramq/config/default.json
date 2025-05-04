@@ -1,8 +1,8 @@
 {
     "mqtt": {
-        "broker": "mqtt://mybroker",
-        "topic": "example/tv"
+        "broker": "mqtt://broker.marko.lan",
+        "topic": "home/tv"
     },
-    "vieraIP": "0.0.0.0",
-    "serviceuser": "me"
+    "vieraIP": "192.168.155.42",
+    "serviceuser": "marko"
 }
