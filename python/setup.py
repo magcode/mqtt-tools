@@ -4,11 +4,11 @@ setup(
     name="malog",
     version="0.1.0",
     description="A logging utility with Loki and colorlog support.",
-    author="magod",
+    author="maggod",
     packages=find_packages(),
     install_requires=[
         "colorlog",
-        "logging_loki"
+        "python-logging-loki"
     ],
     python_requires=">=3.6",
     url="",
