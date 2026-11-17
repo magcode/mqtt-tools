@@ -1,0 +1,9 @@
+{
+  "LOG_LEVEL": "INFO",
+  "LOG_CONSOLE": false,
+  "LOG_APP": "turingscreen",
+  "LOG_LOKI": true,
+  "LOKI_URL": "http://lokiserver:3100",
+  "MQTT_BROKER": "mqtt://mqttbroker",
+  "simulated": false
+}

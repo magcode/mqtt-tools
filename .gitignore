@@ -3,3 +3,6 @@ switchbotmq/config/default.json
 firetvmq/config.json
 moco/configuration.json
 *.pyc
+mismartmq/nohup.out
+turingscreen/config.json
+turingscreen/nohup.out

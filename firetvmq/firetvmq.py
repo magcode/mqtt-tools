@@ -64,6 +64,7 @@ async def watchConnection():
                 app = fireTV.shell(
                     "dumpsys activity top | grep ACTIVITY | tail -n 1 | awk '{print $2}' | cut -d '/' -f1 | cut -d ' ' -f4"
                 )
+                app = app.rstrip()
                 await sendStatus(online=True, nowPlaying=playing, app=app)
             except Exception as e:
                 logger.debug(f"Connection error: {e}")
@@ -93,7 +94,7 @@ async def setupMQTT(host, port, user, password):
                             )
                         if message.topic.matches(startTopic) and payload == "prime":
                             fireTV.shell(
-                                "am start com.amazon.firebat/com.amazon.firebatcore.deeplink.DeepLinkRoutingActivity"
+                                "am start -a com.amazon.firebat.action.YAC_LAUNCH -n com.amazon.firebat/com.amazon.pyrocore.IgnitionActivity"
                             )
                         if message.topic.matches(startTopic) and payload == "xbox":
                             fireTV.shell("am start gamepass.fire.tv/.MainActivity")
@@ -106,6 +107,16 @@ async def setupMQTT(host, port, user, password):
 
                         if message.topic.matches(startTopic) and payload == "ard":
                             fireTV.shell("am start de.swr.ard.avp.mobile.android.amazon/.TvActivity")
+
+                        if message.topic.matches(startTopic) and payload == "wow":
+                            fireTV.shell("am start de.sky.online/com.peacock.peacocktv.AmazonMainActivity")
+
+                        if message.topic.matches(startTopic) and payload == "netflix":
+                            fireTV.shell("am start com.netflix.ninja/com.netflix.ninja.MainActivity")
+                        
+                        if message.topic.matches(startTopic) and payload == "hbo":
+                            fireTV.shell("am start -n com.hbo.hbonow/com.wbd.beam.BeamActivity")
+
                     except Exception as e:
                         logger.info(f"Connection error: {e}")
     except asyncio.CancelledError:
