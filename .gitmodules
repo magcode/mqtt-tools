@@ -1,0 +1,3 @@
+[submodule "turingscreen/vendor/turing-screen"]
+	path = turingscreen/vendor/turing-screen
+	url = https://github.com/mathoudebine/turing-smart-screen-python.git

@@ -1,0 +1,1 @@
+git submodule add https://github.com/mathoudebine/turing-smart-screen-python.git vendor/turing-screen

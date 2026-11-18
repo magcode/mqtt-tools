@@ -6,3 +6,8 @@ moco/configuration.json
 mismartmq/nohup.out
 turingscreen/config.json
 turingscreen/nohup.out
+turingscreen/vendor/*
+turingscreen/venv/*
+turingscreen/screencap.png
+turingscreen/tmp
+turingscreen/log.log
