@@ -3,7 +3,9 @@
   "LOG_CONSOLE": false,
   "LOG_APP": "turingscreen",
   "LOG_LOKI": true,
+  "COM_PORT": "COM3",
   "LOKI_URL": "http://lokiserver:3100",
   "MQTT_BROKER": "mqtt://mqttbroker",
+  "TOPIC": "home/qdisplay",
   "simulated": false
 }

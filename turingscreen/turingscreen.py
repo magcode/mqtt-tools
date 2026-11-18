@@ -5,20 +5,18 @@ turing_path = Path(__file__).resolve().parent / "vendor" / "turing-screen"
 if str(turing_path) not in sys.path:
     sys.path.insert(0, str(turing_path))
 import asyncio
-from io import BytesIO
 import json
-import signal
-import time
 import random
-from datetime import datetime
+import signal
+from io import BytesIO
 from urllib.request import urlopen
+
 from gmqtt import Client as MQTTClient
-from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageOps
 from library.lcd.lcd_comm_rev_a import LcdCommRevA, Orientation
 from library.lcd.lcd_simulated import LcdSimulated
 from malog import setupLogging
+from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageOps
 
-background = "backgrounds/black.png"
 listen_topic = "home/qdisplay"
 PANEL_WIDTH = 320
 PANEL_HEIGHT = 480
@@ -26,8 +24,8 @@ DISPLAY_WIDTH = PANEL_HEIGHT
 DISPLAY_HEIGHT = PANEL_WIDTH
 RESERVED_BOTTOM_HEIGHT = 40
 ARTWORK_SIZE = DISPLAY_HEIGHT - RESERVED_BOTTOM_HEIGHT
-TEXT_BACKGROUND = (180, 180, 180, 210)
-TEXT_COLOR = (245, 245, 245, 255)
+TEXT_BACKGROUND = (60, 60, 60, 210)
+TEXT_COLOR = (255, 255, 255, 255)
 TEXT_STROKE_COLOR = (30, 30, 30, 255)
 
 # sudo usbreset 1a86:5722
@@ -35,7 +33,7 @@ TEXT_STROKE_COLOR = (30, 30, 30, 255)
 
 def on_connect(client, flags, rc, properties):
     logger.info("MQTT Connected")
-    client.subscribe(listen_topic + "/#", qos=0)
+    client.subscribe(config["TOPIC"] + "/#", qos=0)
 
 
 def draw_track_label(draw, text, top, height, font_size):
@@ -119,9 +117,7 @@ async def on_message(client, topic, payload, qos, properties):
                         if len(image_data) > 10 * 1024 * 1024:
                             raise ValueError("Cover image exceeds the 10 MB limit")
                         with Image.open(BytesIO(image_data)) as cover_image:
-                            cover_image = ImageEnhance.Brightness(
-                                cover_image.convert("RGB")
-                            ).enhance(0.55)
+                            cover_image = ImageEnhance.Brightness(cover_image.convert("RGB")).enhance(0.55)
                             cover_image = ImageOps.fit(
                                 cover_image,
                                 (ARTWORK_SIZE, ARTWORK_SIZE),
@@ -260,7 +256,6 @@ async def main():
 
     await client.connect("broker.marko.lan")
 
-    COM_PORT = "/dev/ttyUSB0"
     global lcd_comm
     if config["simulated"]:
         lcd_comm = LcdSimulated(
@@ -270,7 +265,7 @@ async def main():
     else:
         lcd_comm = LcdCommRevA(
             logger=logger,
-            com_port=COM_PORT,
+            com_port=config["COM_PORT"],
             display_width=PANEL_WIDTH,
             display_height=PANEL_HEIGHT,
         )
@@ -289,9 +284,7 @@ async def main():
 
     # Set orientation (screen starts in Portrait)
     lcd_comm.SetOrientation(orientation=Orientation.REVERSE_LANDSCAPE)
-    # Wait here until the shutdown_event is set by the signal handler.
-
-    lcd_comm.DisplayBitmap(background)
+    # Wait here until the shutdown_event is set by the signal handler.    
 
     await shutdown_event.wait()
     await lcd_comm.closeSerial()
